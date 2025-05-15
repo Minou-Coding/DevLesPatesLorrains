@@ -2140,6 +2140,9 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 
 
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2158,17 +2161,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let recognitionIsActive = false;
 
   const pageKeywords = {
-    home: ["accueil"],
-    convois: ["convoi", "convois"],
-    galerie: ["galerie", "photo", "photos", "image", "images"],
-    radios: ["radio", "radios", "musique"],
-    recrutement: ["recrutement", "recrutements", "postuler", "recruter"],
-    reglement: ["règlement", "reglement", "règle", "règles"],
-    couleursEntreprise: ["couleur", "couleurs"],
-    tagTruckersMP: ["tag"],
-    formulaireChauffeur: ["inscription", "formulaire"],
-    discord: ["discord"],
-    chauffeur: ["chauffeur"]
+    home: ["accueil", "retour à l'accueil", "page principale", "menu principal"],
+    convois: ["convoi", "convois", "affiche les convois", "montre les trajets", "je veux voir les convois", "prochains convois"],
+    galerie: ["galerie", "photos", "images", "montre la galerie", "voir les images", "voir les photos"],
+    radios: ["radio", "radios", "musique", "écouter la radio", "mets une radio", "ouvre la page musique"],
+    recrutement: ["recrutement", "postuler", "rejoindre", "envie de rejoindre", "voir les recrutements", "comment postuler"],
+    reglement: ["règlement", "règles", "voir les règles", "quelles sont les règles", "montre le règlement", "règlement de l'entreprise"],
+    couleursEntreprise: ["couleur", "couleurs", "codes couleurs", "couleurs de l'entreprise"],
+    tagTruckersMP: ["tag", "montrer le tag", "voir le tag"],
+    formulaireChauffeur: ["inscription", "formulaire", "je veux m'inscrire", "devenir chauffeur", "remplir le formulaire"],
+    discord: ["discord", "ouvre le discord", "lien discord", "je veux rejoindre le discord"],
+    chauffeur: ["chauffeur", "connexion chauffeur", "espace chauffeur", "se connecter comme chauffeur"]
   };
 
   function playBeep() {
