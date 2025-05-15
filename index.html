@@ -2231,7 +2231,10 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale enrichie avec synonymes et logs visibles -->
+
+
+
+<!-- Reconnaissance vocale enrichie avec fermeture de modals -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2290,6 +2293,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function closeAllModals() {
+    const chauffeurModal = document.getElementById('chauffeurLoginModal');
+    const discordModal = document.getElementById('modalOverlay');
+    if (chauffeurModal) chauffeurModal.style.display = 'none';
+    if (discordModal) discordModal.style.display = 'none';
+  }
+
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
@@ -2298,6 +2308,8 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const key in pageMap) {
       if (transcript.includes(key)) {
         const action = pageMap[key];
+        closeAllModals();
+
         if (action === 'discord') {
           document.getElementById('discordLink')?.click();
         } else if (action === 'chauffeur') {
@@ -2305,6 +2317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           navigate(action);
         }
+
         acted = true;
         break;
       }
