@@ -2100,7 +2100,25 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 </script>
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
+
+  function controlRadioByName(transcript) {
+    const radios = document.querySelectorAll('.radio-card');
+    console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
+    let found = false;
+    radios.forEach(radio => {
+      const name = radio.getAttribute('data-name')?.toLowerCase() || "";
+      const lowerTranscript = transcript.toLowerCase();
+      if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
+        console.log('[VOICE] Correspondance radio trouvée :', name);
+        radio.click();
+        found = true;
+      }
+    });
+    return found;
+  }
+
   // Assurer que chaque radio-card ait un data-name basé sur son texte si absent
   document.querySelectorAll('.radio-card').forEach(card => {
     if (!card.dataset.name) {
