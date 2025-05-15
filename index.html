@@ -2293,5 +2293,61 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
+<script>
+const player = document.querySelector('audio');
+const volumeSlider = document.querySelector('input[type=range]');
+const nextBtn = document.querySelector('#btn-next');
+const prevBtn = document.querySelector('#btn-prev');
+
+function controlAudio(transcript) {
+  let volume = player.volume;
+
+  if (transcript.includes("pause")) {
+    player.pause();
+    console.log("[VOICE] Lecture mise en pause");
+    return true;
+  }
+  if (transcript.includes("play") || transcript.includes("lecture")) {
+    player.play();
+    console.log("[VOICE] Lecture démarrée");
+    return true;
+  }
+  if (transcript.includes("suivant") && nextBtn) {
+    nextBtn.click();
+    console.log("[VOICE] Piste suivante");
+    return true;
+  }
+  if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
+    prevBtn.click();
+    console.log("[VOICE] Piste précédente");
+    return true;
+  }
+  if (transcript.includes("monte le son") || transcript.includes("augmente le volume")) {
+    player.volume = Math.min(1, volume + 0.1);
+    if (volumeSlider) volumeSlider.value = player.volume;
+    console.log("[VOICE] Volume augmenté à", player.volume);
+    return true;
+  }
+  if (transcript.includes("baisse le son") || transcript.includes("diminue le volume")) {
+    player.volume = Math.max(0, volume - 0.1);
+    if (volumeSlider) volumeSlider.value = player.volume;
+    console.log("[VOICE] Volume baissé à", player.volume);
+    return true;
+  }
+
+  const match = transcript.match(/volume à (\d{1,3}) ?%/);
+  if (match) {
+    const percent = Math.min(100, parseInt(match[1]));
+    const value = percent / 100;
+    player.volume = value;
+    if (volumeSlider) volumeSlider.value = value;
+    console.log("[VOICE] Volume défini à", percent + "%");
+    return true;
+  }
+
+  return false;
+}
+</script>
 </body>
 </html>
