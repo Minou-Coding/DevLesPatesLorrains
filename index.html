@@ -2143,6 +2143,9 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 
 
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2161,17 +2164,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let recognitionIsActive = false;
 
   const pageKeywords = {
-    home: ["accueil", "retour à l'accueil", "page principale", "menu principal"],
-    convois: ["convoi", "convois", "affiche les convois", "montre les trajets", "je veux voir les convois", "prochains convois"],
-    galerie: ["galerie", "photos", "images", "montre la galerie", "voir les images", "voir les photos"],
-    radios: ["radio", "radios", "musique", "écouter la radio", "mets une radio", "ouvre la page musique"],
-    recrutement: ["recrutement", "postuler", "rejoindre", "envie de rejoindre", "voir les recrutements", "comment postuler"],
-    reglement: ["règlement", "règles", "voir les règles", "quelles sont les règles", "montre le règlement", "règlement de l'entreprise"],
-    couleursEntreprise: ["couleur", "couleurs", "codes couleurs", "couleurs de l'entreprise"],
-    tagTruckersMP: ["tag", "montrer le tag", "voir le tag"],
-    formulaireChauffeur: ["inscription", "formulaire", "je veux m'inscrire", "devenir chauffeur", "remplir le formulaire"],
-    discord: ["discord", "ouvre le discord", "lien discord", "je veux rejoindre le discord"],
-    chauffeur: ["chauffeur", "connexion chauffeur", "espace chauffeur", "se connecter comme chauffeur"]
+    home: ["accueil", "retour à l'accueil", "page principale", "menu principal", "revenir au menu", "page d'accueil"],
+    convois: ["convoi", "convois", "voir les convois", "prochains convois", "trajets", "liste des trajets", "montrer les convois"],
+    galerie: ["galerie", "photo", "photos", "image", "images", "voir la galerie", "montre moi les photos", "album"],
+    radios: ["radio", "radios", "musique", "ouvrir la radio", "mettre de la musique", "écouter une station"],
+    recrutement: ["recrutement", "recrutements", "rejoindre", "postuler", "envie de postuler", "voir les offres", "je veux postuler"],
+    reglement: ["règlement", "règle", "règles", "conditions", "voir les règles", "quelles sont les règles", "lire le règlement"],
+    couleursEntreprise: ["couleur", "couleurs", "code couleur", "palette", "couleurs de l'entreprise", "charte graphique"],
+    tagTruckersMP: ["tag", "montrer le tag", "voir le tag", "tag entreprise", "identifiant"],
+    formulaireChauffeur: ["inscription", "formulaire", "remplir un formulaire", "devenir chauffeur", "postuler comme chauffeur"],
+    discord: ["discord", "ouvre le discord", "rejoindre discord", "serveur discord", "invitation discord"],
+    chauffeur: ["chauffeur", "connexion chauffeur", "se connecter", "espace chauffeur", "accès chauffeur"]
   };
 
   function playBeep() {
@@ -2187,15 +2190,16 @@ document.addEventListener('DOMContentLoaded', () => {
       o.start();
       setTimeout(() => { o.stop(); ac.close(); }, 200);
     } catch (e) {
-      console.warn('Problème lors du son de confirmation', e);
+      console.warn('Bip échoué', e);
     }
   }
 
   function closeModals() {
-    const chauffeurModal = document.getElementById('chauffeurLoginModal');
-    const discordModal = document.getElementById('modalOverlay');
-    if (chauffeurModal) chauffeurModal.style.display = 'none';
-    if (discordModal) discordModal.style.display = 'none';
+    const modals = ['chauffeurLoginModal', 'modalOverlay'];
+    modals.forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
+    });
   }
 
   recognition.onresult = (event) => {
@@ -2261,11 +2265,10 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log("[VOICE] Micro activé via bouton");
         } catch (err) {
           if (err.name === 'InvalidStateError') {
-            console.warn("[VOICE] Déjà en cours, tentative de relance dans 1s...");
+            console.warn("[VOICE] En attente de relance...");
             setTimeout(() => {
               try {
                 recognition.start();
-                console.log("[VOICE] Relancé après délai");
               } catch (e2) {
                 console.warn("[VOICE] Toujours bloqué :", e2.message);
               }
@@ -2276,8 +2279,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       .catch(err => {
-        console.warn("[VOICE] Permission micro refusée :", err);
-        alert("⚠️ Autorise l'utilisation du micro dans ton navigateur.");
+        console.warn("[VOICE] Accès micro refusé :", err);
+        alert("⚠️ Active le micro dans ton navigateur.");
       });
   });
 });
