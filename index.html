@@ -2225,7 +2225,10 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale avec état propre et sans boucle -->
+
+
+
+<!-- Reconnaissance vocale ultra-stable avec gestion d'état et retry -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2326,14 +2329,31 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   voiceBtn.addEventListener('click', () => {
+    if (recognitionIsActive) {
+      console.log("[VOICE] Déjà en cours d'écoute");
+      return;
+    }
+
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(() => {
-        if (!recognitionIsActive) {
-          isListening = true;
+        try {
           recognition.start();
+          isListening = true;
           console.log("[VOICE] Micro activé via bouton");
-        } else {
-          console.log("[VOICE] Déjà actif");
+        } catch (err) {
+          if (err.name === 'InvalidStateError') {
+            console.warn("[VOICE] Déjà en cours, tentative de relance dans 1s...");
+            setTimeout(() => {
+              try {
+                recognition.start();
+                console.log("[VOICE] Relancé après délai");
+              } catch (e2) {
+                console.warn("[VOICE] Toujours bloqué :", e2.message);
+              }
+            }, 1000);
+          } else {
+            console.error("[VOICE] Erreur inconnue :", err.message);
+          }
         }
       })
       .catch(err => {
