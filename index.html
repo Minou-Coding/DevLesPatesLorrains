@@ -2137,6 +2137,9 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 
 
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2154,14 +2157,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let isListening = false;
   let recognitionIsActive = false;
 
-  const pageGroups = {
-    home: ["accueil", "page d'accueil"],
+  const pageKeywords = {
+    home: ["accueil"],
     convois: ["convoi", "convois"],
-    galerie: ["galerie", "photos", "images"],
+    galerie: ["galerie", "photo", "photos", "image", "images"],
     radios: ["radio", "radios", "musique"],
     recrutement: ["recrutement", "recrutements", "postuler", "recruter"],
-    reglement: ["règlement", "reglement", "règles"],
-    couleursEntreprise: ["couleurs"],
+    reglement: ["règlement", "reglement", "règle", "règles"],
+    couleursEntreprise: ["couleur", "couleurs"],
     tagTruckersMP: ["tag"],
     formulaireChauffeur: ["inscription", "formulaire"],
     discord: ["discord"],
@@ -2197,9 +2200,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
     let acted = false;
 
-    for (const page in pageGroups) {
-      const terms = pageGroups[page];
-      if (terms.some(word => transcript.includes(word))) {
+    for (const page in pageKeywords) {
+      const keywords = pageKeywords[page];
+      if (keywords.some(word => transcript.includes(word))) {
         closeModals();
 
         if (page === 'discord') {
