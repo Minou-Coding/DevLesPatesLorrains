@@ -2109,109 +2109,8 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 });
 
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const closeBtn = document.getElementById("chauffeurCloseBtn");
-  const modalOverlay = document.getElementById("chauffeurLoginModal");
-
-  if (closeBtn && modalOverlay) {
-    closeBtn.addEventListener("click", () => {
-      modalOverlay.style.display = "none";
-    });
-
-    modalOverlay.addEventListener("click", (e) => {
-      if (e.target === modalOverlay) {
-        modalOverlay.style.display = "none";
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        modalOverlay.style.display = "none";
-      }
-    });
-  }
-});
-
-document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
-  document.getElementById("chauffeurLoginModal").style.display = "none";
-});
-
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const closeBtn = document.getElementById("chauffeurCloseBtn");
-  const chauffeurModal = document.getElementById("chauffeurLoginModal");
-
-  if (closeBtn && chauffeurModal) {
-    console.log("Croix détectée");
-    closeBtn.addEventListener("click", () => {
-      console.log("Clic sur la croix détecté");
-      chauffeurModal.style.display = "none";
-    });
-
-    chauffeurModal.addEventListener("click", (e) => {
-      if (e.target === chauffeurModal) {
-        chauffeurModal.style.display = "none";
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        chauffeurModal.style.display = "none";
-      }
-    });
-  }
-});
-
-document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
-  document.getElementById("chauffeurLoginModal").style.display = "none";
-});
-
-document.getElementById("chauffeurForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const age = document.getElementById("age").value.trim();
-  const pickup = document.getElementById("pickup").value.trim();
-  const discord = document.getElementById("discord").value.trim();
-  const tiktok = document.getElementById("tiktok").value.trim();
-
-  const webhookURL = "https://discord.com/api/webhooks/1352567172773445653/4N2MxZZSOZNIL2Fk5oHgNqvlj8dmsl0OJLUvpJ0oPVba-uJWKyFOf7JTec2YOGJYzfqq";
-
-  const payload = {
-    embeds: [{
-      title: "📝 Enregistrement Chauffeur",
-      color: 3066993,
-      fields: [
-        { name: "🧓 Âge Réel", value: age, inline: true },
-        { name: "🚛 Pseudo Pickup", value: pickup, inline: true },
-        { name: "💬 Pseudo Discord", value: discord, inline: true },
-        { name: "🎥 Pseudo TikTok", value: tiktok || "Non précisé", inline: true }
-      ],
-      timestamp: new Date().toISOString(),
-      footer: {
-        text: "Les Pâtés Lorrains • Recrutement"
-      }
-    }]
-  };
-
-  fetch(webhookURL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  }).then(res => {
-    if (res.ok) {
-      document.getElementById("chauffeurForm").reset();
-      document.getElementById("successMessage").style.display = "block";
-      setTimeout(() => {
-        document.getElementById("successMessage").style.display = "none";
-      }, 3000);
-    }
-  });
-});
 
 
-</script>
 
 
 
@@ -2235,6 +2134,9 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2252,20 +2154,19 @@ document.addEventListener('DOMContentLoaded', () => {
   let isListening = false;
   let recognitionIsActive = false;
 
-  const 
-pageGroups = {
-  home: ["accueil", "page d'accueil"],
-  convois: ["convoi", "convois"],
-  galerie: ["galerie", "photos", "images"],
-  radios: ["radio", "radios", "musique"],
-  recrutement: ["recrutement", "recrutements", "postuler", "recruter"],
-  reglement: ["règlement", "reglement", "règles"],
-  couleursEntreprise: ["couleurs"],
-  tagTruckersMP: ["tag"],
-  formulaireChauffeur: ["inscription", "formulaire"],
-  discord: ["discord"],
-  chauffeur: ["chauffeur"]
-};
+  const pageGroups = {
+    home: ["accueil", "page d'accueil"],
+    convois: ["convoi", "convois"],
+    galerie: ["galerie", "photos", "images"],
+    radios: ["radio", "radios", "musique"],
+    recrutement: ["recrutement", "recrutements", "postuler", "recruter"],
+    reglement: ["règlement", "reglement", "règles"],
+    couleursEntreprise: ["couleurs"],
+    tagTruckersMP: ["tag"],
+    formulaireChauffeur: ["inscription", "formulaire"],
+    discord: ["discord"],
+    chauffeur: ["chauffeur"]
+  };
 
   function playBeep() {
     try {
@@ -2284,15 +2185,23 @@ pageGroups = {
     }
   }
 
+  function closeModals() {
+    const chauffeurModal = document.getElementById('chauffeurLoginModal');
+    const discordModal = document.getElementById('modalOverlay');
+    if (chauffeurModal) chauffeurModal.style.display = 'none';
+    if (discordModal) discordModal.style.display = 'none';
+  }
+
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
-
     let acted = false;
 
     for (const page in pageGroups) {
       const terms = pageGroups[page];
       if (terms.some(word => transcript.includes(word))) {
+        closeModals();
+
         if (page === 'discord') {
           document.getElementById('discordLink')?.click();
         } else if (page === 'chauffeur') {
@@ -2300,6 +2209,7 @@ pageGroups = {
         } else {
           navigate(page);
         }
+
         acted = true;
         break;
       }
