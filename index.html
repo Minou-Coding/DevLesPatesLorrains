@@ -2222,7 +2222,10 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale avec gestion de start() sécurisé -->
+
+
+
+<!-- Reconnaissance vocale avec état propre et sans boucle -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2237,8 +2240,8 @@ document.addEventListener('DOMContentLoaded', () => {
   recognition.continuous = true;
   recognition.interimResults = false;
 
-  let voiceActivated = false;
   let isListening = false;
+  let recognitionIsActive = false;
 
   const pageMap = {
     'accueil': 'home',
@@ -2307,33 +2310,30 @@ document.addEventListener('DOMContentLoaded', () => {
   recognition.onerror = (e) => {
     console.error("[VOICE] Erreur :", e.error);
     if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-      voiceActivated = false;
       isListening = false;
+      recognitionIsActive = false;
     }
   };
 
+  recognition.onstart = () => {
+    console.log("[VOICE] Démarrée");
+    recognitionIsActive = true;
+  };
+
   recognition.onend = () => {
-    if (voiceActivated) {
-      console.log("[VOICE] Reconnexion...");
-      try {
-        recognition.start();
-      } catch (err) {
-        console.warn("[VOICE] Impossible de relancer :", err.message);
-        isListening = false;
-      }
-    }
+    console.log("[VOICE] Terminée");
+    recognitionIsActive = false;
   };
 
   voiceBtn.addEventListener('click', () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(() => {
-        if (!isListening) {
-          voiceActivated = true;
+        if (!recognitionIsActive) {
           isListening = true;
           recognition.start();
-          console.log("[VOICE] Micro activé");
+          console.log("[VOICE] Micro activé via bouton");
         } else {
-          console.log("[VOICE] Déjà en cours d'écoute");
+          console.log("[VOICE] Déjà actif");
         }
       })
       .catch(err => {
