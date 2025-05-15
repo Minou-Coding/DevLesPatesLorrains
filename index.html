@@ -692,6 +692,14 @@ header {
 }
 
 </style>
+
+<!-- Vérification de l'origine sécurisée pour SpeechRecognition -->
+<script>
+if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+  alert("La reconnaissance vocale nécessite une connexion HTTPS pour fonctionner correctement.");
+}
+</script>
+
 </head>
 <body>
 <div id="loader">
