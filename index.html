@@ -2234,7 +2234,7 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale enrichie avec fermeture de modals -->
+<!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2252,28 +2252,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let isListening = false;
   let recognitionIsActive = false;
 
-  const pageMap = {
-    'accueil': 'home',
-    'page d'accueil': 'home',
-    'convois': 'convois',
-    'convoi': 'convois',
-    'galerie': 'galerie',
-    'photos': 'galerie',
-    'images': 'galerie',
-    'radios': 'radios',
-    'radio': 'radios',
-    'musique': 'radios',
-    'recrutements': 'recrutement',
-    'postuler': 'recrutement',
-    'recruter': 'recrutement',
-    'règlement': 'reglement',
-    'reglement': 'reglement',
-    'règles': 'reglement',
-    'couleurs': 'couleursEntreprise',
-    'tag': 'tagTruckersMP',
-    'discord': 'discord',
-    'chauffeur': 'chauffeur',
-    'inscription': 'formulaireChauffeur'
+  const pageGroups = {
+    home: ['accueil', 'page d'accueil'],
+    convois: ['convoi', 'convois'],
+    galerie: ['galerie', 'photos', 'images'],
+    radios: ['radio', 'radios', 'musique'],
+    recrutement: ['recrutement', 'recrutements', 'postuler', 'recruter'],
+    reglement: ['règlement', 'reglement', 'règles'],
+    couleursEntreprise: ['couleurs'],
+    tagTruckersMP: ['tag'],
+    formulaireChauffeur: ['inscription', 'formulaire'],
+    discord: ['discord'],
+    chauffeur: ['chauffeur']
   };
 
   function playBeep() {
@@ -2293,31 +2283,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function closeAllModals() {
-    const chauffeurModal = document.getElementById('chauffeurLoginModal');
-    const discordModal = document.getElementById('modalOverlay');
-    if (chauffeurModal) chauffeurModal.style.display = 'none';
-    if (discordModal) discordModal.style.display = 'none';
-  }
-
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
+
     let acted = false;
 
-    for (const key in pageMap) {
-      if (transcript.includes(key)) {
-        const action = pageMap[key];
-        closeAllModals();
-
-        if (action === 'discord') {
+    for (const page in pageGroups) {
+      const terms = pageGroups[page];
+      if (terms.some(word => transcript.includes(word))) {
+        if (page === 'discord') {
           document.getElementById('discordLink')?.click();
-        } else if (action === 'chauffeur') {
+        } else if (page === 'chauffeur') {
           openChauffeurLogin();
         } else {
-          navigate(action);
+          navigate(page);
         }
-
         acted = true;
         break;
       }
