@@ -692,14 +692,6 @@ header {
 }
 
 </style>
-
-<!-- Vérification de l'origine sécurisée pour SpeechRecognition -->
-<script>
-if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-  alert("La reconnaissance vocale nécessite une connexion HTTPS pour fonctionner correctement.");
-}
-</script>
-
 </head>
 <body>
 <div id="loader">
@@ -2221,7 +2213,13 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 </script>
 
-<!-- Reconnaissance vocale activée par bouton 🎤 -->
+
+
+
+
+
+
+<!-- Reconnaissance vocale avec test de permission et logs -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2230,83 +2228,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn("SpeechRecognition non supporté");
     return;
   }
+
   const recognition = new SpeechRecognition();
   recognition.lang = 'fr-FR';
   recognition.continuous = true;
   recognition.interimResults = false;
 
-  const pageMap = {
-    'accueil': 'home',
-    'convois': 'convois',
-    'galerie': 'galerie',
-    'radios': 'radios',
-    'recrutements': 'recrutement',
-    'règlement': 'reglement',
-    'reglement': 'reglement',
-    'couleurs': 'couleursEntreprise',
-    'tag': 'tagTruckersMP',
-    'enregistrement': 'formulaireChauffeur',
-    'convoi': 'convoi09mai'
-  };
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-    // Son de confirmation court et doux
-    try {
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ac.createOscillator();
-      const g = ac.createGain();
-      o.type = 'sine';
-      o.frequency.value = 440;
-      g.gain.value = 0.05;
-      o.connect(g);
-      g.connect(ac.destination);
-      o.start();
-      setTimeout(() => { o.stop(); ac.close(); }, 200);
-    } catch (e) {
-      console.warn('Problème lors du son de confirmation', e);
-    }
-    // Navigation intelligente
-    if (transcript.includes('chauffeur')) {
-      openChauffeurLogin();
-      return;
-    }
-    for (const key in pageMap) {
-      if (transcript.includes(key)) {
-        navigate(pageMap[key]);
-        return;
-      }
-    }
-  };
-
-  recognition.onerror = (e) => console.error("Erreur vocale :", e.error);
-  recognition.onend = () => recognition.start();
-
-  // Démarrer uniquement au clic sur le bouton
-  voiceBtn.addEventListener('click', () => {
-    try {
-      recognition.start();
-    } catch (err) {
-      console.error("Impossible de démarrer la voix:", err);
-    }
-  });
-});
-</script>
-
-
-<!-- Reconnaissance vocale activée par bouton 🎤 -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const voiceBtn = document.getElementById('voiceToggleBtn');
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    console.warn("SpeechRecognition non supporté");
-    return;
-  }
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
-  recognition.continuous = true;
-  recognition.interimResults = false;
+  let voiceActivated = false;
 
   const pageMap = {
     'accueil': 'home',
@@ -2342,14 +2270,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+    console.log('[VOICE] Reçu :', transcript);
     let acted = false;
 
     if (transcript.includes('chauffeur')) {
       openChauffeurLogin();
       acted = true;
     } else if (transcript.includes('discord')) {
-      document.getElementById('discordLink').click();
-      acted = true;
+      const discordBtn = document.getElementById('discordLink');
+      if (discordBtn) {
+        discordBtn.click();
+        acted = true;
+      }
     } else {
       for (const key in pageMap) {
         if (transcript.includes(key)) {
@@ -2361,20 +2293,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (acted) {
+      console.log('[VOICE] Action exécutée');
       playBeep();
+    } else {
+      console.log('[VOICE] Aucune action reconnue');
     }
   };
 
-  recognition.onerror = (e) => console.error("Erreur vocale :", e.error);
-  recognition.onend = () => recognition.start();
-
-  // Démarrer uniquement au clic sur le bouton
-  voiceBtn.addEventListener('click', () => {
-    try {
+  recognition.onerror = (e) => console.error("[VOICE] Erreur :", e.error);
+  recognition.onend = () => {
+    if (voiceActivated) {
+      console.log("[VOICE] Relance automatique");
       recognition.start();
-    } catch (err) {
-      console.error("Impossible de démarrer la voix:", err);
     }
+  };
+
+  voiceBtn.addEventListener('click', () => {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => {
+        if (!voiceActivated) {
+          voiceActivated = true;
+          recognition.start();
+          console.log("[VOICE] Micro activé");
+        }
+      })
+      .catch(err => {
+        console.warn("[VOICE] Permission micro refusée :", err);
+        alert("⚠️ Autorise l'utilisation du micro dans ton navigateur.");
+      });
   });
 });
 </script>
