@@ -2346,18 +2346,23 @@ function controlAudio(transcript) {
 </script>
 
 <script>
+
 function controlRadioByName(transcript) {
   const radios = document.querySelectorAll('.radio-card');
+  console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
   let found = false;
   radios.forEach(radio => {
     const name = radio.getAttribute('data-name')?.toLowerCase() || "";
-    if (transcript.includes(name) || transcript.includes("lance " + name) || transcript.includes("joue " + name) || transcript.includes("mets " + name)) {
+    const lowerTranscript = transcript.toLowerCase();
+    if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
+      console.log('[VOICE] Correspondance radio trouvée :', name);
       radio.click();
-      console.log('[VOICE] Radio déclenchée :', name);
       found = true;
     }
   });
   return found;
+}
+
 }
 </script>
 
