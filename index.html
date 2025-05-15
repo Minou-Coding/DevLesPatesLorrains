@@ -2295,12 +2295,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<script>
-const player = document.querySelector('audio');
-const volumeSlider = document.querySelector('input[type=range]');
-const nextBtn = document.querySelector('#btn-next');
-const prevBtn = document.querySelector('#btn-prev');
-
 function controlAudio(transcript) {
   let volume = player.volume;
 
@@ -2357,7 +2351,7 @@ function controlRadioByName(transcript) {
   let found = false;
   radios.forEach(radio => {
     const name = radio.getAttribute('data-name')?.toLowerCase() || "";
-    if (transcript.includes(name)) {
+    if (transcript.includes(name) || transcript.includes("lance " + name) || transcript.includes("joue " + name) || transcript.includes("mets " + name)) {
       radio.click();
       console.log('[VOICE] Radio déclenchée :', name);
       found = true;
