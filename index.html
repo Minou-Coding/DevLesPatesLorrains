@@ -2219,7 +2219,10 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale avec test de permission et logs -->
+
+
+
+<!-- Reconnaissance vocale avec gestion de start() sécurisé -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2235,6 +2238,7 @@ document.addEventListener('DOMContentLoaded', () => {
   recognition.interimResults = false;
 
   let voiceActivated = false;
+  let isListening = false;
 
   const pageMap = {
     'accueil': 'home',
@@ -2300,21 +2304,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  recognition.onerror = (e) => console.error("[VOICE] Erreur :", e.error);
+  recognition.onerror = (e) => {
+    console.error("[VOICE] Erreur :", e.error);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      voiceActivated = false;
+      isListening = false;
+    }
+  };
+
   recognition.onend = () => {
     if (voiceActivated) {
-      console.log("[VOICE] Relance automatique");
-      recognition.start();
+      console.log("[VOICE] Reconnexion...");
+      try {
+        recognition.start();
+      } catch (err) {
+        console.warn("[VOICE] Impossible de relancer :", err.message);
+        isListening = false;
+      }
     }
   };
 
   voiceBtn.addEventListener('click', () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(() => {
-        if (!voiceActivated) {
+        if (!isListening) {
           voiceActivated = true;
+          isListening = true;
           recognition.start();
           console.log("[VOICE] Micro activé");
+        } else {
+          console.log("[VOICE] Déjà en cours d'écoute");
         }
       })
       .catch(err => {
