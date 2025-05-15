@@ -2101,6 +2101,14 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Assurer que chaque radio-card ait un data-name basé sur son texte si absent
+  document.querySelectorAll('.radio-card').forEach(card => {
+    if (!card.dataset.name) {
+      const text = card.textContent.trim().toLowerCase();
+      card.dataset.name = text;
+      console.log("[DEBUG] data-name ajouté :", text);
+    }
+  });
   const voiceBtn = document.getElementById('voiceToggleBtn');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const player = document.querySelector('audio');
@@ -2183,13 +2191,13 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("[VOICE] Piste précédente");
       return true;
     }
-    if (transcript.includes("monte le son") || transcript.includes("augmente le volume")) {
+    if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
       player.volume = Math.min(1, volume + 0.1);
       if (volumeSlider) volumeSlider.value = player.volume;
       console.log("[VOICE] Volume augmenté à", player.volume);
       return true;
     }
-    if (transcript.includes("baisse le son") || transcript.includes("diminue le volume")) {
+    if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
       player.volume = Math.max(0, volume - 0.1);
       if (volumeSlider) volumeSlider.value = player.volume;
       console.log("[VOICE] Volume baissé à", player.volume);
@@ -2318,13 +2326,13 @@ function controlAudio(transcript) {
     console.log("[VOICE] Piste précédente");
     return true;
   }
-  if (transcript.includes("monte le son") || transcript.includes("augmente le volume")) {
+  if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
     player.volume = Math.min(1, volume + 0.1);
     if (volumeSlider) volumeSlider.value = player.volume;
     console.log("[VOICE] Volume augmenté à", player.volume);
     return true;
   }
-  if (transcript.includes("baisse le son") || transcript.includes("diminue le volume")) {
+  if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
     player.volume = Math.max(0, volume - 0.1);
     if (volumeSlider) volumeSlider.value = player.volume;
     console.log("[VOICE] Volume baissé à", player.volume);
@@ -2366,5 +2374,5 @@ function controlRadioByName(transcript) {
 }
 </script>
 
-</body> 
+</body>
 </html>
