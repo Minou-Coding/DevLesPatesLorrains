@@ -2214,6 +2214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
 
     let acted = controlAudio(transcript);
+    if (!acted) acted = controlRadioByName(transcript);
     if (acted) return playBeep();
 
     for (const page in pageKeywords) {
@@ -2349,5 +2350,22 @@ function controlAudio(transcript) {
   return false;
 }
 </script>
+
+<script>
+function controlRadioByName(transcript) {
+  const radios = document.querySelectorAll('.radio-card');
+  let found = false;
+  radios.forEach(radio => {
+    const name = radio.getAttribute('data-name')?.toLowerCase() || "";
+    if (transcript.includes(name)) {
+      radio.click();
+      console.log('[VOICE] Radio déclenchée :', name);
+      found = true;
+    }
+  });
+  return found;
+}
+</script>
+
 </body>
 </html>
