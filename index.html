@@ -2217,7 +2217,24 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   }
 
-  recognition.onresult = (event) => {
+  
+function controlRadioByName(transcript) {
+  const radios = document.querySelectorAll('.radio-card');
+  console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
+  let found = false;
+  radios.forEach(radio => {
+    const name = radio.getAttribute('data-name')?.toLowerCase() || "";
+    const lowerTranscript = transcript.toLowerCase();
+    if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
+      console.log('[VOICE] Correspondance radio trouvée :', name);
+      radio.click();
+      found = true;
+    }
+  });
+  return found;
+}
+
+recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
     console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
 
@@ -2353,26 +2370,7 @@ function controlAudio(transcript) {
 }
 </script>
 
-<script>
 
-function controlRadioByName(transcript) {
-  const radios = document.querySelectorAll('.radio-card');
-  console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
-  let found = false;
-  radios.forEach(radio => {
-    const name = radio.getAttribute('data-name')?.toLowerCase() || "";
-    const lowerTranscript = transcript.toLowerCase();
-    if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
-      console.log('[VOICE] Correspondance radio trouvée :', name);
-      radio.click();
-      found = true;
-    }
-  });
-  return found;
-}
-
-}
-</script>
 
 </body>
 </html>
