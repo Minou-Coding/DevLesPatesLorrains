@@ -2228,7 +2228,10 @@ document.getElementById("chauffeurForm").addEventListener("submit", function(e) 
 
 
 
-<!-- Reconnaissance vocale ultra-stable avec gestion d'état et retry -->
+
+
+
+<!-- Reconnaissance vocale enrichie avec synonymes et logs visibles -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
@@ -2248,17 +2251,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const pageMap = {
     'accueil': 'home',
+    'page d'accueil': 'home',
     'convois': 'convois',
+    'convoi': 'convois',
     'galerie': 'galerie',
+    'photos': 'galerie',
+    'images': 'galerie',
     'radios': 'radios',
+    'radio': 'radios',
+    'musique': 'radios',
     'recrutements': 'recrutement',
+    'postuler': 'recrutement',
     'recruter': 'recrutement',
     'règlement': 'reglement',
     'reglement': 'reglement',
+    'règles': 'reglement',
     'couleurs': 'couleursEntreprise',
     'tag': 'tagTruckersMP',
-    'enregistrement': 'formulaireChauffeur',
-    'convoi': 'convoi09mai'
+    'discord': 'discord',
+    'chauffeur': 'chauffeur',
+    'inscription': 'formulaireChauffeur'
   };
 
   function playBeep() {
@@ -2280,25 +2292,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-    console.log('[VOICE] Reçu :', transcript);
+    console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
     let acted = false;
 
-    if (transcript.includes('chauffeur')) {
-      openChauffeurLogin();
-      acted = true;
-    } else if (transcript.includes('discord')) {
-      const discordBtn = document.getElementById('discordLink');
-      if (discordBtn) {
-        discordBtn.click();
-        acted = true;
-      }
-    } else {
-      for (const key in pageMap) {
-        if (transcript.includes(key)) {
-          navigate(pageMap[key]);
-          acted = true;
-          break;
+    for (const key in pageMap) {
+      if (transcript.includes(key)) {
+        const action = pageMap[key];
+        if (action === 'discord') {
+          document.getElementById('discordLink')?.click();
+        } else if (action === 'chauffeur') {
+          openChauffeurLogin();
+        } else {
+          navigate(action);
         }
+        acted = true;
+        break;
       }
     }
 
