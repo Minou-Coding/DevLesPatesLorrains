@@ -2149,12 +2149,17 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 
 
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const player = document.querySelector('audio');
   const volumeSlider = document.querySelector('input[type=range]');
+  const nextBtn = document.querySelector('#nextBtn');
+  const prevBtn = document.querySelector('#prevBtn');
 
   if (!SpeechRecognition) {
     console.warn("SpeechRecognition non supporté");
@@ -2219,6 +2224,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (transcript.includes("play") || transcript.includes("lecture")) {
       player.play();
       console.log("[VOICE] Lecture démarrée");
+      return true;
+    }
+    if (transcript.includes("suivant") && nextBtn) {
+      nextBtn.click();
+      console.log("[VOICE] Piste suivante");
+      return true;
+    }
+    if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
+      prevBtn.click();
+      console.log("[VOICE] Piste précédente");
       return true;
     }
     if (transcript.includes("monte le son") || transcript.includes("augmente le volume")) {
