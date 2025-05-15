@@ -787,8 +787,8 @@ Les Pâtés Lorrains
 <p>Charte graphique des camions &amp; remorques</p>
 </div>
 <div class="card" onclick="navigate('formulaireChauffeur')" style="cursor:pointer; background: linear-gradient(135deg, #1a1d23, #121418); border-left: 4px solid var(--accent); transition: transform 0.3s;">
-  <h3>📋 Enregistrement Chauffeur</h3>
-  <p>Soumettez votre dossier pour rejoindre officiellement Les Pâtés Lorrains</p>
+<h3>📋 Enregistrement Chauffeur</h3>
+<p>Soumettez votre dossier pour rejoindre officiellement Les Pâtés Lorrains</p>
 </div>
 </section>
 <!-- PAGE TAG TRUCKERSMP -->
@@ -1171,7 +1171,7 @@ Les Pâtés Lorrains
   📸 Galerie
  </h2>
 <div class="gallery">
-<img alt="gallery1" src="https://i.ibb.co/Xxfxc8V4/075efb8960bc.png"/> 
+<img alt="gallery1" src="https://i.ibb.co/Xxfxc8V4/075efb8960bc.png"/>
 <img alt="gallery1" src="https://i.ibb.co/YB75pxsB/e02c5c84eef8.png"/>
 <img alt="gallery1" src="https://i.ibb.co/DPz3Lqx4/4f4863a57222.png"/>
 <img alt="gallery1" src="https://i.ibb.co/W4RTv4vz/cba75d9dfba1.png"/>
@@ -1358,46 +1358,35 @@ Les Pâtés Lorrains
 <button onclick="navigate('chauffeurPage')" style="margin-top: 2rem;">⬅️ Retour à l'Espace Chauffeur</button>
 </div>
 </section>
-
 <section id="formulaireChauffeur">
-  <h2 style="text-align:center; font-size:2rem;">📋 Enregistrement des Chauffeurs</h2>
-  <div class="card" style="max-width:600px; margin:auto; background:linear-gradient(145deg, #1a1d23, #1f222a); box-shadow:0 0 20px rgba(0,195,255,0.2);">
-    <form id="chauffeurForm" style="display:flex; flex-direction:column; gap:1.2rem;">
-      
-      <div>
-        <label for="age" style="font-weight:bold;">🧓 Ton âge (réel) *</label>
-        <input type="number" id="age" required placeholder="Ex: 21" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
-      </div>
-
-      <div>
-        <label for="pickup" style="font-weight:bold;">🚛 Pseudo Pickup *</label>
-        <input type="text" id="pickup" required placeholder="Ex: Minou_Offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
-      </div>
-
-      <div>
-        <label for="discord" style="font-weight:bold;">💬 Pseudo Discord *</label>
-        <input type="text" id="discord" required placeholder="Ex: Minou#1234" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
-      </div>
-
-      <div>
-        <label for="tiktok" style="font-weight:bold;">🎥 Pseudo TikTok (facultatif)</label>
-        <input type="text" id="tiktok" placeholder="Ex: minou_offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
-      </div>
-
-      <button type="submit" style="margin-top:1rem; padding:0.8rem; background:linear-gradient(90deg, #00c3ff, #007aa3); border:none; border-radius:10px; color:black; font-weight:bold; font-size:1rem; cursor:pointer; transition:transform 0.2s;">
+<h2 style="text-align:center; font-size:2rem;">📋 Enregistrement des Chauffeurs</h2>
+<div class="card" style="max-width:600px; margin:auto; background:linear-gradient(145deg, #1a1d23, #1f222a); box-shadow:0 0 20px rgba(0,195,255,0.2);">
+<form id="chauffeurForm" style="display:flex; flex-direction:column; gap:1.2rem;">
+<div>
+<label for="age" style="font-weight:bold;">🧓 Ton âge (réel) *</label>
+<input id="age" placeholder="Ex: 21" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="number"/>
+</div>
+<div>
+<label for="pickup" style="font-weight:bold;">🚛 Pseudo Pickup *</label>
+<input id="pickup" placeholder="Ex: Minou_Offciel" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
+</div>
+<div>
+<label for="discord" style="font-weight:bold;">💬 Pseudo Discord *</label>
+<input id="discord" placeholder="Ex: Minou#1234" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
+</div>
+<div>
+<label for="tiktok" style="font-weight:bold;">🎥 Pseudo TikTok (facultatif)</label>
+<input id="tiktok" placeholder="Ex: minou_offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
+</div>
+<button style="margin-top:1rem; padding:0.8rem; background:linear-gradient(90deg, #00c3ff, #007aa3); border:none; border-radius:10px; color:black; font-weight:bold; font-size:1rem; cursor:pointer; transition:transform 0.2s;" type="submit">
         📝 M'enregistrer comme chauffeur chez Les Pâtés Lorrains
-      </button>          
-
-      <p id="successMessage" style="color:lime; margin-top:10px; display:none; text-align:center;">✅ Envoyé avec succès !</p>
-    </form>
-    <button onclick="navigate('chauffeurPage')" style="margin-top:2rem; background:transparent; border:1px solid var(--accent); color:var(--accent); padding:0.6rem 1rem; border-radius:8px; cursor:pointer;">⬅️ Retour à l'Espace Chauffeur</button>
-  </div>
+      </button>
+<p id="successMessage" style="color:lime; margin-top:10px; display:none; text-align:center;">✅ Envoyé avec succès !</p>
+</form>
+<button onclick="navigate('chauffeurPage')" style="margin-top:2rem; background:transparent; border:1px solid var(--accent); color:var(--accent); padding:0.6rem 1rem; border-radius:8px; cursor:pointer;">⬅️ Retour à l'Espace Chauffeur</button>
+</div>
 </section>
-
-
-
 <!-- Lightbox Galerie -->
-
 <div class="lightbox" id="lightbox">
 <span class="close" id="lightbox-close">
   ×
@@ -1424,13 +1413,13 @@ Les Pâtés Lorrains
 ⏭
     </button>
 </div>
-    <button id="voiceToggleBtn" class="spotify-btn" title="Activer la voix">🎤</button>
+<button class="spotify-btn" id="voiceToggleBtn" title="Activer la voix">🎤</button>
 <div class="radio-name" id="currentRadio">
     Aucune radio
    </div>
 <input id="volumeSlider" max="1" min="0" step="0.01" type="range" value="0.05"/>
 <audio autoplay="" id="audioPlayer">
-</audio>
+</audio><div id="music-controls" style="margin-top:10px; text-align:center;"><button id="btn-prev">Précédent</button><button id="btn-next" style="margin-left:10px;">Suivant</button></div>
 </div>
 <script>
    // Navigation entre sections
@@ -2109,57 +2098,15 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 });
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const voiceBtn = document.getElementById('voiceToggleBtn');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const player = document.querySelector('audio');
   const volumeSlider = document.querySelector('input[type=range]');
-  const nextBtn = document.querySelector('#nextBtn');
-  const prevBtn = document.querySelector('#prevBtn');
+  const nextBtn = document.querySelector('#btn-next');
+  const prevBtn = document.querySelector('#btn-prev');
 
   if (!SpeechRecognition) {
     console.warn("SpeechRecognition non supporté");
@@ -2346,6 +2293,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
 </body>
 </html>
