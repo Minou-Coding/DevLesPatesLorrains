@@ -1097,19 +1097,19 @@ Les Pâtés Lorrains
     RTL
    </span>
 </div>
-<div class="radio-card" data-name="nrj" data-url="https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3" onclick="playRadio(6)">
+<div onclick="playRadio(6)">
 <img alt="NRJ" src="https://i.ibb.co/v6jHbHLQ/t-l-chargement.png"/>
 <span>
     NRJ
    </span>
 </div>
-<div class="radio-card" data-name="skyrock" data-url="https://icecast.skyrock.net/s/natio_mp3_128k" onclick="playRadio(7)">
+<div onclick="playRadio(7)">
 <img alt="Skyrock" src="https://i.ibb.co/DDH8FvjB/t-l-chargement-3.png"/>
 <span>
     Skyrock
    </span>
 </div>
-<div class="radio-card" data-name="fun radio" data-url="https://streaming.radio.funradio.fr/fun-1-44-128" onclick="playRadio(8)">
+<div onclick="playRadio(8)">
 <img alt="Fun Radio" src="https://i.ibb.co/4wvsMXYW/t-l-chargement-1.jpg"/>
 <span>
     Fun Radio
@@ -1127,7 +1127,7 @@ Les Pâtés Lorrains
     Rire &amp; Chansons
    </span>
 </div>
-<div class="radio-card" data-name="nostalgie" data-url="https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3" onclick="playRadio(11)">
+<div onclick="playRadio(11)">
 <img alt="Nostalgie" src="https://i.ibb.co/YBcQ9xP2/images.png"/>
 <span>
     Nostalgie
@@ -1139,7 +1139,7 @@ Les Pâtés Lorrains
     RFM
    </span>
 </div>
-<div class="radio-card" data-name="rtl2" data-url="https://streaming.radio.rtl2.fr/rtl2-1-44-128" onclick="playRadio(13)">
+<div onclick="playRadio(13)">
 <img alt="RTL2" src="https://i.ibb.co/9x9b6Tz/t-l-chargement-8.png"/>
 <span>
     RTL2
@@ -2099,7 +2099,244 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 </script>
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
+<script>
 
+document.addEventListener('DOMContentLoaded', () => {
+
+  function controlRadioByName(transcript) {
+    const radios = document.querySelectorAll('.radio-card');
+    console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
+    let found = false;
+    radios.forEach(radio => {
+      const name = radio.getAttribute('data-name')?.toLowerCase() || "";
+      const lowerTranscript = transcript.toLowerCase();
+      if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
+        console.log('[VOICE] Correspondance radio trouvée :', name);
+        radio.click();
+        found = true;
+      }
+    });
+    return found;
+  }
+
+  // Assurer que chaque radio-card ait un data-name basé sur son texte si absent
+  document.querySelectorAll('.radio-card').forEach(card => {
+    if (!card.dataset.name) {
+      const text = card.textContent.trim().toLowerCase();
+      card.dataset.name = text;
+      console.log("[DEBUG] data-name ajouté :", text);
+    }
+  });
+  const voiceBtn = document.getElementById('voiceToggleBtn');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const player = document.querySelector('audio');
+  const volumeSlider = document.querySelector('input[type=range]');
+  const nextBtn = document.querySelector('#btn-next');
+  const prevBtn = document.querySelector('#btn-prev');
+
+  if (!SpeechRecognition) {
+    console.warn("SpeechRecognition non supporté");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'fr-FR';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  let isListening = false;
+  let recognitionIsActive = false;
+
+  const pageKeywords = {
+    home: ["accueil", "retour à l'accueil", "page principale", "menu principal", "revenir au menu", "page d'accueil"],
+    convois: ["convoi", "convois", "voir les convois", "prochains convois", "trajets", "liste des trajets", "montrer les convois", "qu'on voit"],
+    galerie: ["galerie", "photo", "photos", "image", "images", "voir la galerie", "montre moi les photos", "album"],
+    radios: ["radio", "radios", "musique", "ouvrir la radio", "mettre de la musique", "écouter une station"],
+    recrutement: ["recrutement", "recrutements", "rejoindre", "postuler", "envie de postuler", "voir les offres", "je veux postuler"],
+    reglement: ["règlement", "règle", "règles", "conditions", "voir les règles", "quelles sont les règles", "lire le règlement"],
+    couleursEntreprise: ["couleur", "couleurs", "code couleur", "palette", "couleurs de l'entreprise", "charte graphique"],
+    tagTruckersMP: ["tag", "montrer le tag", "voir le tag", "tag entreprise", "identifiant"],
+    formulaireChauffeur: ["inscription", "formulaire", "remplir un formulaire", "devenir chauffeur", "postuler comme chauffeur"],
+    discord: ["discord", "ouvre le discord", "rejoindre discord", "serveur discord", "invitation discord"],
+    chauffeur: ["chauffeur", "connexion chauffeur", "se connecter", "espace chauffeur", "accès chauffeur"]
+  };
+
+  function playBeep() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = 'sine';
+      o.frequency.value = 440;
+      g.gain.value = 0.05;
+      o.connect(g);
+      g.connect(ac.destination);
+      o.start();
+      setTimeout(() => { o.stop(); ac.close(); }, 200);
+    } catch (e) {
+      console.warn('Bip échoué', e);
+    }
+  }
+
+  function closeModals() {
+    const modals = ['chauffeurLoginModal', 'modalOverlay'];
+    modals.forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
+    });
+  }
+
+  function controlAudio(transcript) {
+    let volume = player.volume;
+
+    if (transcript.includes("pause")) {
+      player.pause();
+      console.log("[VOICE] Lecture mise en pause");
+      return true;
+    }
+    if (transcript.includes("play") || transcript.includes("lecture")) {
+      player.play();
+      console.log("[VOICE] Lecture démarrée");
+      return true;
+    }
+    if (transcript.includes("suivant") && nextBtn) {
+      nextBtn.click();
+      console.log("[VOICE] Piste suivante");
+      return true;
+    }
+    if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
+      prevBtn.click();
+      console.log("[VOICE] Piste précédente");
+      return true;
+    }
+    if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
+      player.volume = Math.min(1, volume + 0.1);
+      if (volumeSlider) volumeSlider.value = player.volume;
+      console.log("[VOICE] Volume augmenté à", player.volume);
+      return true;
+    }
+    if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
+      player.volume = Math.max(0, volume - 0.1);
+      if (volumeSlider) volumeSlider.value = player.volume;
+      console.log("[VOICE] Volume baissé à", player.volume);
+      return true;
+    }
+
+    const match = transcript.match(/volume à (\d{1,3}) ?%/);
+    if (match) {
+      const percent = Math.min(100, parseInt(match[1]));
+      const value = percent / 100;
+      player.volume = value;
+      if (volumeSlider) volumeSlider.value = value;
+      console.log("[VOICE] Volume défini à", percent + "%");
+      return true;
+    }
+
+    return false;
+  }
+
+  
+function controlRadioByName(transcript) {
+  const radios = document.querySelectorAll('.radio-card');
+  console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
+  let found = false;
+  radios.forEach(radio => {
+    const name = radio.getAttribute('data-name')?.toLowerCase() || "";
+    const lowerTranscript = transcript.toLowerCase();
+    if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
+      console.log('[VOICE] Correspondance radio trouvée :', name);
+      radio.click();
+      found = true;
+    }
+  });
+  return found;
+}
+
+recognition.onresult = (event) => {
+    const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+    console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
+
+    let acted = controlAudio(transcript);
+    if (!acted) acted = controlRadioByName(transcript);
+    if (acted) return playBeep();
+
+    for (const page in pageKeywords) {
+      const keywords = pageKeywords[page];
+      if (keywords.some(word => transcript.includes(word))) {
+        closeModals();
+
+        if (page === 'discord') {
+          document.getElementById('discordLink')?.click();
+        } else if (page === 'chauffeur') {
+          openChauffeurLogin();
+        } else {
+          navigate(page);
+        }
+
+        acted = true;
+        break;
+      }
+    }
+
+    if (acted) {
+      console.log('[VOICE] Action exécutée');
+      playBeep();
+    } else {
+      console.log('[VOICE] Aucune action reconnue');
+    }
+  };
+
+  recognition.onerror = (e) => {
+    console.error("[VOICE] Erreur :", e.error);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      isListening = false;
+      recognitionIsActive = false;
+    }
+  };
+
+  recognition.onstart = () => {
+    console.log("[VOICE] Démarrée");
+    recognitionIsActive = true;
+  };
+
+  recognition.onend = () => {
+    console.log("[VOICE] Terminée");
+    recognitionIsActive = false;
+  };
+
+  voiceBtn.addEventListener('click', () => {
+    if (recognitionIsActive) {
+      console.log("[VOICE] Déjà en cours d'écoute");
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => {
+        try {
+          recognition.start();
+          isListening = true;
+          console.log("[VOICE] Micro activé via bouton");
+        } catch (err) {
+          if (err.name === 'InvalidStateError') {
+            setTimeout(() => {
+              try {
+                recognition.start();
+              } catch (e2) {
+                console.warn("[VOICE] Toujours bloqué :", e2.message);
+              }
+            }, 1000);
+          } else {
+            console.error("[VOICE] Erreur inconnue :", err.message);
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("[VOICE] Accès micro refusé :", err);
+        alert("⚠️ Active le micro dans ton navigateur.");
+      });
+  });
+});
+</script>
 
 function controlAudio(transcript) {
   let volume = player.volume;
@@ -2114,12 +2351,12 @@ function controlAudio(transcript) {
     console.log("[VOICE] Lecture démarrée");
     return true;
   }
-  if (transcript.includes("suivant") &amp;&amp; nextBtn) {
+  if (transcript.includes("suivant") && nextBtn) {
     nextBtn.click();
     console.log("[VOICE] Piste suivante");
     return true;
   }
-  if ((transcript.includes("précédent") || transcript.includes("précédente")) &amp;&amp; prevBtn) {
+  if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
     prevBtn.click();
     console.log("[VOICE] Piste précédente");
     return true;
@@ -2149,167 +2386,9 @@ function controlAudio(transcript) {
 
   return false;
 }
+</script>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const voiceBtn = document.getElementById('voiceToggleBtn');
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const player = document.querySelector('audio');
-  const volumeSlider = document.querySelector('input[type=range]');
-  const nextBtn = document.querySelector('#btn-next');
-  const prevBtn = document.querySelector('#btn-prev');
 
-  if (!SpeechRecognition) {
-    console.warn("SpeechRecognition non supporté");
-    return;
-  }
 
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
-  recognition.continuous = true;
-  recognition.interimResults = false;
-
-  let isListening = false;
-  let recognitionIsActive = false;
-
-  function controlRadioByName(transcript) {
-    const radios = document.querySelectorAll('.radio-card');
-    console.log("[VOICE] Radios détectées :", [...radios].map(r => r.dataset.name));
-    let found = false;
-    radios.forEach(radio => {
-      const name = radio.dataset.name?.toLowerCase();
-      const url = radio.dataset.url;
-      const lower = transcript.toLowerCase();
-      if (name && url && (lower.includes(name) || lower.includes("lance " + name) || lower.includes("mets " + name) || lower.includes("joue " + name))) {
-        console.log("[VOICE] Lecture de la radio :", name, "=>", url);
-        player.src = url;
-        player.play();
-        found = true;
-      }
-    });
-    return found;
-  }
-
-  function controlAudio(transcript) {
-    let volume = player.volume;
-    if (transcript.includes("pause")) {
-      player.pause();
-      return true;
-    }
-    if (transcript.includes("play") || transcript.includes("lecture")) {
-      player.play();
-      return true;
-    }
-    if (transcript.includes("suivant") && nextBtn) {
-      nextBtn.click();
-      return true;
-    }
-    if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
-      prevBtn.click();
-      return true;
-    }
-    if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
-      player.volume = Math.min(1, volume + 0.1);
-      if (volumeSlider) volumeSlider.value = player.volume;
-      return true;
-    }
-    if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
-      player.volume = Math.max(0, volume - 0.1);
-      if (volumeSlider) volumeSlider.value = player.volume;
-      return true;
-    }
-    const match = transcript.match(/volume à (\d{1,3}) ?%/);
-    if (match) {
-      const percent = Math.min(100, parseInt(match[1]));
-      const value = percent / 100;
-      player.volume = value;
-      if (volumeSlider) volumeSlider.value = value;
-      return true;
-    }
-    return false;
-  }
-
-  function playBeep() {
-    try {
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ac.createOscillator();
-      const g = ac.createGain();
-      o.type = 'sine';
-      o.frequency.value = 440;
-      g.gain.value = 0.05;
-      o.connect(g);
-      g.connect(ac.destination);
-      o.start();
-      setTimeout(() => { o.stop(); ac.close(); }, 200);
-    } catch (e) {
-      console.warn('Erreur bip :', e);
-    }
-  }
-
-  function closeModals() {
-    const modals = ['chauffeurLoginModal', 'modalOverlay'];
-    modals.forEach(id => {
-      const modal = document.getElementById(id);
-      if (modal) modal.style.display = 'none';
-    });
-  }
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-    console.log('[VOICE] ENTENDU :', transcript);
-
-    let acted = controlAudio(transcript);
-    if (!acted) acted = controlRadioByName(transcript);
-
-    if (!acted) {
-      for (const page in pageKeywords) {
-        const keywords = pageKeywords[page];
-        if (keywords.some(word => transcript.includes(word))) {
-          closeModals();
-          if (page === 'discord') document.getElementById('discordLink')?.click();
-          else if (page === 'chauffeur') openChauffeurLogin();
-          else navigate(page);
-          acted = true;
-          break;
-        }
-      }
-    }
-
-    if (acted) playBeep();
-  };
-
-  recognition.onerror = (e) => {
-    console.error("[VOICE] Erreur :", e.error);
-    recognitionIsActive = false;
-  };
-
-  recognition.onstart = () => {
-    console.log("[VOICE] Démarrée");
-    recognitionIsActive = true;
-  };
-
-  recognition.onend = () => {
-    console.log("[VOICE] Terminée");
-    recognitionIsActive = false;
-  };
-
-  if (voiceBtn) {
-    voiceBtn.addEventListener('click', () => {
-      if (recognitionIsActive) return;
-      navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {
-        try {
-          recognition.start();
-          isListening = true;
-          console.log("[VOICE] Micro activé via bouton");
-        } catch (err) {
-          console.warn("[VOICE] Erreur micro :", err.message);
-        }
-      }).catch(err => {
-        console.warn("[VOICE] Refus micro :", err);
-        alert("⚠️ Active ton micro.");
-      });
-    });
-  }
-});
-</script></body>
+</body>
 </html>
