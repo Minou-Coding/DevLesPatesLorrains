@@ -1518,7 +1518,7 @@ function validateChauffeur() {
 } // ← ici on ferme correctement la fonction
 
 // Radios
-const radios = [
+window.radios = [
   {
     name: "Direct FM (Metz)",
     stream: "https://directfm.ice.infomaniak.ch/directfm-128.mp3"
@@ -2386,6 +2386,25 @@ function controlAudio(transcript) {
 
   return false;
 }
+
+function traiterCommandeVocale(texte) {
+  const mots = texte.toLowerCase().split(" ");
+  const motsRadio = mots.filter(m => ["énergie", "nrj", "inter", "skyrock", "fun", "nostalgie", "chérie", "rtl", "fip", "bleu", "info", "culture", "musique", "direct"].includes(m));
+
+  if (motsRadio.length > 0) {
+    const mot = motsRadio[0];
+    const index = window.radios.findIndex(r => r.name.toLowerCase().includes(mot));
+    if (index !== -1) {
+      playRadio(index);
+      console.log(`[VOICE] Lecture de la radio : ${window.radios[index].name}`);
+    } else {
+      console.log(`[VOICE] Radio non trouvée pour : ${mot}`);
+    }
+  } else {
+    console.log(`[VOICE] Aucune action reconnue`);
+  }
+}
+
 </script>
 
 
