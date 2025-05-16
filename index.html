@@ -766,9 +766,7 @@ Les Pâtés Lorrains
 <div class="modal" style="position: relative;"><button id="chauffeurCloseBtn" style="position:absolute; top:12px; right:16px; background:var(--card); color:var(--accent); border:2px solid var(--accent); width:32px; height:32px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 0 6px rgba(0,0,0,0.3); z-index:1001;">×</button>
 <h3>Connexion Chauffeur</h3>
 <input id="chauffeurId" placeholder="Identifiant" type="text"/>
-<form onsubmit="return false;">
 <input id="chauffeurPass" placeholder="Mot de passe" type="password"/>
-</form>
 <label style="display: block; margin: 0.5rem 0; font-size: 0.9rem;">
 <input id="rememberMe" style="margin-right: 6px;" type="checkbox"/> Se souvenir de moi
     </label>
@@ -789,8 +787,8 @@ Les Pâtés Lorrains
 <p>Charte graphique des camions &amp; remorques</p>
 </div>
 <div class="card" onclick="navigate('formulaireChauffeur')" style="cursor:pointer; background: linear-gradient(135deg, #1a1d23, #121418); border-left: 4px solid var(--accent); transition: transform 0.3s;">
-<h3>📋 Enregistrement Chauffeur</h3>
-<p>Soumettez votre dossier pour rejoindre officiellement Les Pâtés Lorrains</p>
+  <h3>📋 Enregistrement Chauffeur</h3>
+  <p>Soumettez votre dossier pour rejoindre officiellement Les Pâtés Lorrains</p>
 </div>
 </section>
 <!-- PAGE TAG TRUCKERSMP -->
@@ -1173,7 +1171,7 @@ Les Pâtés Lorrains
   📸 Galerie
  </h2>
 <div class="gallery">
-<img alt="gallery1" src="https://i.ibb.co/Xxfxc8V4/075efb8960bc.png"/>
+<img alt="gallery1" src="https://i.ibb.co/Xxfxc8V4/075efb8960bc.png"/> 
 <img alt="gallery1" src="https://i.ibb.co/YB75pxsB/e02c5c84eef8.png"/>
 <img alt="gallery1" src="https://i.ibb.co/DPz3Lqx4/4f4863a57222.png"/>
 <img alt="gallery1" src="https://i.ibb.co/W4RTv4vz/cba75d9dfba1.png"/>
@@ -1360,35 +1358,46 @@ Les Pâtés Lorrains
 <button onclick="navigate('chauffeurPage')" style="margin-top: 2rem;">⬅️ Retour à l'Espace Chauffeur</button>
 </div>
 </section>
+
 <section id="formulaireChauffeur">
-<h2 style="text-align:center; font-size:2rem;">📋 Enregistrement des Chauffeurs</h2>
-<div class="card" style="max-width:600px; margin:auto; background:linear-gradient(145deg, #1a1d23, #1f222a); box-shadow:0 0 20px rgba(0,195,255,0.2);">
-<form id="chauffeurForm" style="display:flex; flex-direction:column; gap:1.2rem;">
-<div>
-<label for="age" style="font-weight:bold;">🧓 Ton âge (réel) *</label>
-<input id="age" placeholder="Ex: 21" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="number"/>
-</div>
-<div>
-<label for="pickup" style="font-weight:bold;">🚛 Pseudo Pickup *</label>
-<input id="pickup" placeholder="Ex: Minou_Offciel" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
-</div>
-<div>
-<label for="discord" style="font-weight:bold;">💬 Pseudo Discord *</label>
-<input id="discord" placeholder="Ex: Minou#1234" required="" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
-</div>
-<div>
-<label for="tiktok" style="font-weight:bold;">🎥 Pseudo TikTok (facultatif)</label>
-<input id="tiktok" placeholder="Ex: minou_offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;" type="text"/>
-</div>
-<button style="margin-top:1rem; padding:0.8rem; background:linear-gradient(90deg, #00c3ff, #007aa3); border:none; border-radius:10px; color:black; font-weight:bold; font-size:1rem; cursor:pointer; transition:transform 0.2s;" type="submit">
+  <h2 style="text-align:center; font-size:2rem;">📋 Enregistrement des Chauffeurs</h2>
+  <div class="card" style="max-width:600px; margin:auto; background:linear-gradient(145deg, #1a1d23, #1f222a); box-shadow:0 0 20px rgba(0,195,255,0.2);">
+    <form id="chauffeurForm" style="display:flex; flex-direction:column; gap:1.2rem;">
+      
+      <div>
+        <label for="age" style="font-weight:bold;">🧓 Ton âge (réel) *</label>
+        <input type="number" id="age" required placeholder="Ex: 21" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
+      </div>
+
+      <div>
+        <label for="pickup" style="font-weight:bold;">🚛 Pseudo Pickup *</label>
+        <input type="text" id="pickup" required placeholder="Ex: Minou_Offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
+      </div>
+
+      <div>
+        <label for="discord" style="font-weight:bold;">💬 Pseudo Discord *</label>
+        <input type="text" id="discord" required placeholder="Ex: Minou#1234" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
+      </div>
+
+      <div>
+        <label for="tiktok" style="font-weight:bold;">🎥 Pseudo TikTok (facultatif)</label>
+        <input type="text" id="tiktok" placeholder="Ex: minou_offciel" style="padding:0.7rem; border:none; border-radius:8px; background:#2c3038; color:white;"/>
+      </div>
+
+      <button type="submit" style="margin-top:1rem; padding:0.8rem; background:linear-gradient(90deg, #00c3ff, #007aa3); border:none; border-radius:10px; color:black; font-weight:bold; font-size:1rem; cursor:pointer; transition:transform 0.2s;">
         📝 M'enregistrer comme chauffeur chez Les Pâtés Lorrains
-      </button>
-<p id="successMessage" style="color:lime; margin-top:10px; display:none; text-align:center;">✅ Envoyé avec succès !</p>
-</form>
-<button onclick="navigate('chauffeurPage')" style="margin-top:2rem; background:transparent; border:1px solid var(--accent); color:var(--accent); padding:0.6rem 1rem; border-radius:8px; cursor:pointer;">⬅️ Retour à l'Espace Chauffeur</button>
-</div>
+      </button>          
+
+      <p id="successMessage" style="color:lime; margin-top:10px; display:none; text-align:center;">✅ Envoyé avec succès !</p>
+    </form>
+    <button onclick="navigate('chauffeurPage')" style="margin-top:2rem; background:transparent; border:1px solid var(--accent); color:var(--accent); padding:0.6rem 1rem; border-radius:8px; cursor:pointer;">⬅️ Retour à l'Espace Chauffeur</button>
+  </div>
 </section>
+
+
+
 <!-- Lightbox Galerie -->
+
 <div class="lightbox" id="lightbox">
 <span class="close" id="lightbox-close">
   ×
@@ -1415,13 +1424,13 @@ Les Pâtés Lorrains
 ⏭
     </button>
 </div>
-<button class="spotify-btn" id="voiceToggleBtn" title="Activer la voix">🎤</button>
+    <button id="voiceToggleBtn" class="spotify-btn" title="Activer la voix">🎤</button>
 <div class="radio-name" id="currentRadio">
     Aucune radio
    </div>
 <input id="volumeSlider" max="1" min="0" step="0.01" type="range" value="0.05"/>
 <audio autoplay="" id="audioPlayer">
-</audio><div id="music-controls" style="margin-top:10px; text-align:center;"><button id="btn-prev">Précédent</button><button id="btn-next" style="margin-left:10px;">Suivant</button></div>
+</audio>
 </div>
 <script>
    // Navigation entre sections
@@ -1596,6 +1605,7 @@ const radios = [
     audioPlayer.volume = 0.05; // volume initial à 5%
 
     const currentRadio = document.getElementById("currentRadio");
+    const volumeSlider = document.getElementById("volumeSlider");
 
     function playRadio(index) {
       if (index < 0 || index >= radios.length) return;
@@ -2099,13 +2109,182 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 });
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Reconnaissance vocale avec modals et tolérance singulier/pluriel -->
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
+  const voiceBtn = document.getElementById('voiceToggleBtn');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    console.warn("SpeechRecognition non supporté");
+    return;
+  }
 
-  
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'fr-FR';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  let isListening = false;
+  let recognitionIsActive = false;
+
+  const pageKeywords = {
+    home: ["accueil", "retour à l'accueil", "page principale", "menu principal", "revenir au menu", "page d'accueil"],
+    convois: ["convoi", "convois", "voir les convois", "prochains convois", "trajets", "liste des trajets", "montrer les convois", "qu'on voit"],
+    galerie: ["galerie", "photo", "photos", "image", "images", "voir la galerie", "montre moi les photos", "album"],
+    radios: ["radio", "radios", "musique", "ouvrir la radio", "mettre de la musique", "écouter une station"],
+    recrutement: ["recrutement", "recrutements", "rejoindre", "postuler", "envie de postuler", "voir les offres", "je veux postuler"],
+    reglement: ["règlement", "règle", "règles", "conditions", "voir les règles", "quelles sont les règles", "lire le règlement"],
+    couleursEntreprise: ["couleur", "couleurs", "code couleur", "palette", "couleurs de l'entreprise", "charte graphique"],
+    tagTruckersMP: ["tag", "montrer le tag", "voir le tag", "tag entreprise", "identifiant"],
+    formulaireChauffeur: ["inscription", "formulaire", "remplir un formulaire", "devenir chauffeur", "postuler comme chauffeur"],
+    discord: ["discord", "ouvre le discord", "rejoindre discord", "serveur discord", "invitation discord"],
+    chauffeur: ["chauffeur", "connexion chauffeur", "se connecter", "espace chauffeur", "accès chauffeur"]
+  };
+
+  function playBeep() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = 'sine';
+      o.frequency.value = 440;
+      g.gain.value = 0.05;
+      o.connect(g);
+      g.connect(ac.destination);
+      o.start();
+      setTimeout(() => { o.stop(); ac.close(); }, 200);
+    } catch (e) {
+      console.warn('Bip échoué', e);
+    }
+  }
+
+  function closeModals() {
+    const modals = ['chauffeurLoginModal', 'modalOverlay'];
+    modals.forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
     });
+  }
 
-</script></body>
+  recognition.onresult = (event) => {
+    const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+    console.log('%c[VOICE] ENTENDU : ' + transcript, 'color: limegreen; font-weight: bold; font-size: 16px');
+    let acted = false;
+
+    for (const page in pageKeywords) {
+      const keywords = pageKeywords[page];
+      if (keywords.some(word => transcript.includes(word))) {
+        closeModals();
+
+        if (page === 'discord') {
+          document.getElementById('discordLink')?.click();
+        } else if (page === 'chauffeur') {
+          openChauffeurLogin();
+        } else {
+          navigate(page);
+        }
+
+        acted = true;
+        break;
+      }
+    }
+
+    if (acted) {
+      console.log('[VOICE] Action exécutée');
+      playBeep();
+    } else {
+      console.log('[VOICE] Aucune action reconnue');
+    }
+  };
+
+  recognition.onerror = (e) => {
+    console.error("[VOICE] Erreur :", e.error);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      isListening = false;
+      recognitionIsActive = false;
+    }
+  };
+
+  recognition.onstart = () => {
+    console.log("[VOICE] Démarrée");
+    recognitionIsActive = true;
+  };
+
+  recognition.onend = () => {
+    console.log("[VOICE] Terminée");
+    recognitionIsActive = false;
+  };
+
+  voiceBtn.addEventListener('click', () => {
+    if (recognitionIsActive) {
+      console.log("[VOICE] Déjà en cours d'écoute");
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => {
+        try {
+          recognition.start();
+          isListening = true;
+          console.log("[VOICE] Micro activé via bouton");
+        } catch (err) {
+          if (err.name === 'InvalidStateError') {
+            console.warn("[VOICE] En attente de relance...");
+            setTimeout(() => {
+              try {
+                recognition.start();
+              } catch (e2) {
+                console.warn("[VOICE] Toujours bloqué :", e2.message);
+              }
+            }, 1000);
+          } else {
+            console.error("[VOICE] Erreur inconnue :", err.message);
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("[VOICE] Accès micro refusé :", err);
+        alert("⚠️ Active le micro dans ton navigateur.");
+      });
+  });
+});
+</script>
+
+</body>
 </html>
