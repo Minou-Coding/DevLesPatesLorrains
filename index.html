@@ -2150,5 +2150,115 @@ function controlAudio(transcript) {
   return false;
 }
 
-</body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const voiceBtn = document.getElementById('voiceToggleBtn');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const player = document.querySelector('audio');
+  const volumeSlider = document.querySelector('input[type=range]');
+  const nextBtn = document.querySelector('#btn-next');
+  const prevBtn = document.querySelector('#btn-prev');
+
+  if (!SpeechRecognition) return;
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'fr-FR';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  const pageKeywords = {
+    home: ["accueil", "retour", "page principale"],
+    convois: ["convoi", "convois"],
+    galerie: ["galerie", "photo", "photos"],
+    radios: ["radio", "radios", "musique"],
+    recrutement: ["recrutement", "rejoindre"],
+    reglement: ["règlement", "règles"],
+    chauffeur: ["chauffeur", "connexion"],
+    discord: ["discord"]
+  };
+
+  function playBeep() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 440;
+    gain.gain.value = 0.05;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    setTimeout(() => { osc.stop(); ctx.close(); }, 200);
+  }
+
+  function controlAudio(transcript) {
+    if (!player) return false;
+    const vol = player.volume;
+    if (transcript.includes("pause")) return player.pause(), true;
+    if (transcript.includes("play") || transcript.includes("lecture")) return player.play(), true;
+    if (transcript.includes("suivant") && nextBtn) return nextBtn.click(), true;
+    if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) return prevBtn.click(), true;
+    if (["plus fort", "monte", "hausse", "augmente"].some(k => transcript.includes(k))) {
+      player.volume = Math.min(1, vol + 0.1); if (volumeSlider) volumeSlider.value = player.volume; return true;
+    }
+    if (["moins fort", "baisse", "réduis", "diminue"].some(k => transcript.includes(k))) {
+      player.volume = Math.max(0, vol - 0.1); if (volumeSlider) volumeSlider.value = player.volume; return true;
+    }
+    const m = transcript.match(/volume à (\d{1,3}) ?%/);
+    if (m) { const v = Math.min(100, parseInt(m[1])) / 100; player.volume = v; if (volumeSlider) volumeSlider.value = v; return true; }
+    return false;
+  }
+
+  function controlRadioByName(transcript) {
+    const radios = document.querySelectorAll('.radio-card');
+    let found = false;
+    radios.forEach(radio => {
+      const name = radio.dataset.name?.toLowerCase();
+      const url = radio.dataset.url;
+      const t = transcript.toLowerCase();
+      if (name && url && (t.includes(name) || t.includes("lance " + name) || t.includes("mets " + name) || t.includes("joue " + name))) {
+        player.src = url;
+        player.play();
+        found = true;
+      }
+    });
+    return found;
+  }
+
+  function closeModals() {
+    ['chauffeurLoginModal', 'modalOverlay'].forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
+    });
+  }
+
+  recognition.onresult = (e) => {
+    const t = e.results[e.results.length - 1][0].transcript.trim().toLowerCase();
+    console.log('[VOICE] ENTENDU :', t);
+    let acted = controlAudio(t);
+    if (!acted) acted = controlRadioByName(t);
+    if (!acted) {
+      for (const key in pageKeywords) {
+        if (pageKeywords[key].some(w => t.includes(w))) {
+          closeModals();
+          if (key === "discord") document.getElementById('discordLink')?.click();
+          else if (key === "chauffeur") openChauffeurLogin?.();
+          else navigate?.(key);
+          acted = true;
+          break;
+        }
+      }
+    }
+    if (acted) playBeep();
+  };
+
+  recognition.onerror = err => console.error("[VOICE] Erreur :", err.message);
+  recognition.onstart = () => console.log("[VOICE] Démarrée");
+  recognition.onend = () => console.log("[VOICE] Terminée");
+
+  voiceBtn?.addEventListener('click', () => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {
+      try { recognition.start(); } catch (e) { console.warn("Déjà actif"); }
+    }).catch(() => alert("Autorise le micro"));
+  });
+});
+</script></body>
 </html>
