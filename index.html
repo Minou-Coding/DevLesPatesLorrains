@@ -2210,7 +2210,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function controlAudio(transcript) {
+  <script>
+function controlAudio(transcript) {
     let volume = player.volume;
 
     if (transcript.includes("pause")) {
@@ -2218,6 +2219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("[VOICE] Lecture mise en pause");
       return true;
     }
+</script>
     if (transcript.includes("play") || transcript.includes("lecture")) {
       player.play();
       console.log("[VOICE] Lecture démarrée");
