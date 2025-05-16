@@ -2364,6 +2364,21 @@ recognition.onresult = (event) => {
 });
 </script>
 
+`);
+    } else {
+      console.log(`[VOICE] Radio non trouvée pour : ${mot}`);
+    }
+  } else {
+    console.log(`[VOICE] Aucune action reconnue`);
+  }
+}
+
+</script>
+
+
+
+
+<script>
 function controlAudio(transcript) {
   let volume = player.volume;
 
@@ -2382,21 +2397,21 @@ function controlAudio(transcript) {
     console.log("[VOICE] Piste suivante");
     return true;
   }
-  if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
+  if (transcript.includes("précédent") && prevBtn) {
     prevBtn.click();
     console.log("[VOICE] Piste précédente");
     return true;
   }
-  if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
+  if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("hausse le volume")) {
     player.volume = Math.min(1, volume + 0.1);
-    if (volumeSlider) volumeSlider.value = player.volume;
+    volumeSlider.value = player.volume;
     console.log("[VOICE] Volume augmenté à", player.volume);
     return true;
   }
   if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
     player.volume = Math.max(0, volume - 0.1);
-    if (volumeSlider) volumeSlider.value = player.volume;
-    console.log("[VOICE] Volume baissé à", player.volume);
+    volumeSlider.value = player.volume;
+    console.log("[VOICE] Volume diminué à", player.volume);
     return true;
   }
 
@@ -2430,10 +2445,7 @@ function traiterCommandeVocale(texte) {
     console.log(`[VOICE] Aucune action reconnue`);
   }
 }
-
 </script>
-
-
 
 </body>
 </html>
