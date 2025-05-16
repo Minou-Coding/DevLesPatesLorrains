@@ -766,7 +766,9 @@ Les Pâtés Lorrains
 <div class="modal" style="position: relative;"><button id="chauffeurCloseBtn" style="position:absolute; top:12px; right:16px; background:var(--card); color:var(--accent); border:2px solid var(--accent); width:32px; height:32px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 0 6px rgba(0,0,0,0.3); z-index:1001;">×</button>
 <h3>Connexion Chauffeur</h3>
 <input id="chauffeurId" placeholder="Identifiant" type="text"/>
+<form onsubmit="return false;">
 <input id="chauffeurPass" placeholder="Mot de passe" type="password"/>
+</form>
 <label style="display: block; margin: 0.5rem 0; font-size: 0.9rem;">
 <input id="rememberMe" style="margin-right: 6px;" type="checkbox"/> Se souvenir de moi
     </label>
@@ -1594,7 +1596,6 @@ const radios = [
     audioPlayer.volume = 0.05; // volume initial à 5%
 
     const currentRadio = document.getElementById("currentRadio");
-    const volumeSlider = document.getElementById("volumeSlider");
 
     function playRadio(index) {
       if (index < 0 || index >= radios.length) return;
@@ -2105,140 +2106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
     });
-    return found;
-  }
-
-  // Assurer que chaque radio-card ait un data-name basé sur son texte si absent
-  document.querySelectorAll('.radio-card').forEach(card => {
-    if (!card.dataset.name) {
-      const text = card.textContent.trim().toLowerCase();
-      card.dataset.name = text;
-      console.log("[DEBUG] data-name ajouté :", text);
-    }
-  });
-  const voiceBtn = document.getElementById('voiceToggleBtn');
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const player = document.querySelector('audio');
-  const volumeSlider = document.querySelector('input[type=range]');
-  const nextBtn = document.querySelector('#btn-next');
-  const prevBtn = document.querySelector('#btn-prev');
-
-  if (!SpeechRecognition) {
-    console.warn("SpeechRecognition non supporté");
-    return;
-  }
-
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
-  recognition.continuous = true;
-  recognition.interimResults = false;
-
-  let isListening = false;
-  let recognitionIsActive = false;
-
-  const pageKeywords = {
-    home: ["accueil", "retour à l'accueil", "page principale", "menu principal", "revenir au menu", "page d'accueil"],
-    convois: ["convoi", "convois", "voir les convois", "prochains convois", "trajets", "liste des trajets", "montrer les convois", "qu'on voit"],
-    galerie: ["galerie", "photo", "photos", "image", "images", "voir la galerie", "montre moi les photos", "album"],
-    radios: ["radio", "radios", "musique", "ouvrir la radio", "mettre de la musique", "écouter une station"],
-    recrutement: ["recrutement", "recrutements", "rejoindre", "postuler", "envie de postuler", "voir les offres", "je veux postuler"],
-    reglement: ["règlement", "règle", "règles", "conditions", "voir les règles", "quelles sont les règles", "lire le règlement"],
-    couleursEntreprise: ["couleur", "couleurs", "code couleur", "palette", "couleurs de l'entreprise", "charte graphique"],
-    tagTruckersMP: ["tag", "montrer le tag", "voir le tag", "tag entreprise", "identifiant"],
-    formulaireChauffeur: ["inscription", "formulaire", "remplir un formulaire", "devenir chauffeur", "postuler comme chauffeur"],
-    discord: ["discord", "ouvre le discord", "rejoindre discord", "serveur discord", "invitation discord"],
-    chauffeur: ["chauffeur", "connexion chauffeur", "se connecter", "espace chauffeur", "accès chauffeur"]
-  };
-
-  function playBeep() {
-    try {
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ac.createOscillator();
-      const g = ac.createGain();
-      o.type = 'sine';
-      o.frequency.value = 440;
-      g.gain.value = 0.05;
-      o.connect(g);
-      g.connect(ac.destination);
-      o.start();
-      setTimeout(() => { o.stop(); ac.close(); }, 200);
-    } catch (e) {
-      console.warn('Bip échoué', e);
-    }
-  }
-
-  function closeModals() {
-    const modals = ['chauffeurLoginModal', 'modalOverlay'];
-    modals.forEach(id => {
-      const modal = document.getElementById(id);
-      if (modal) modal.style.display = 'none';
-    });
-  }
-
-  
-    if (transcript.includes("play") || transcript.includes("lecture")) {
-      player.play();
-      console.log("[VOICE] Lecture démarrée");
-      return true;
-    }
-    if (transcript.includes("suivant") && nextBtn) {
-      nextBtn.click();
-      console.log("[VOICE] Piste suivante");
-      return true;
-    }
-    if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
-      prevBtn.click();
-      console.log("[VOICE] Piste précédente");
-      return true;
-    }
-    if (transcript.includes("monte le son") || transcript.includes("augmente le volume") || transcript.includes("plus fort") || transcript.includes("plus de son") || transcript.includes("hausse le volume")) {
-      player.volume = Math.min(1, volume + 0.1);
-      if (volumeSlider) volumeSlider.value = player.volume;
-      console.log("[VOICE] Volume augmenté à", player.volume);
-      return true;
-    }
-    if (transcript.includes("baisse le son") || transcript.includes("diminue le volume") || transcript.includes("moins fort") || transcript.includes("réduis le volume") || transcript.includes("réduit le son")) {
-      player.volume = Math.max(0, volume - 0.1);
-      if (volumeSlider) volumeSlider.value = player.volume;
-      console.log("[VOICE] Volume baissé à", player.volume);
-      return true;
-    }
-
-    const match = transcript.match(/volume à (\d{1,3}) ?%/);
-    if (match) {
-      const percent = Math.min(100, parseInt(match[1]));
-      const value = percent / 100;
-      player.volume = value;
-      if (volumeSlider) volumeSlider.value = value;
-  if (recognitionIsActive) {
-    console.log("[VOICE] Déjà en cours d'écoute");
-    return;
-  }
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(() => {
-      try {
-        recognition.start();
-        isListening = true;
-        console.log("[VOICE] Micro activé via bouton");
-      } catch (err) {
-        if (err.name === 'InvalidStateError') {
-          setTimeout(() => {
-            try {
-              recognition.start();
-            } catch (e2) {
-              console.warn("[VOICE] Toujours bloqué :", e2.message);
-            }
-          }, 1000);
-        } else {
-          console.error("[VOICE] Erreur inconnue :", err.message);
-        }
-      }
-    })
-    .catch(err => {
-      console.warn("[VOICE] Accès micro refusé :", err);
-      alert("⚠️ Active le micro dans ton navigateur.");
-    });
-});
 
 </script></body>
 </html>
