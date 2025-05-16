@@ -2103,19 +2103,27 @@ document.getElementById("chauffeurCloseBtn").addEventListener("click", () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  function controlRadioByName(transcript) {
-    const radios = document.querySelectorAll('.radio-card');
-    console.log("[VOICE] Radios disponibles :", [...radios].map(r => r.getAttribute('data-name')));
-    let found = false;
-    radios.forEach(radio => {
-      const name = radio.getAttribute('data-name')?.toLowerCase() || "";
-      const lowerTranscript = transcript.toLowerCase();
-      if (lowerTranscript.includes(name) || lowerTranscript.includes("lance " + name) || lowerTranscript.includes("joue " + name) || lowerTranscript.includes("mets " + name)) {
-        console.log('[VOICE] Correspondance radio trouvée :', name);
-        radio.click();
-        found = true;
-      }
+function controlRadioByName(transcript) {
+  const player = document.querySelector('audio');
+  const radios = document.querySelectorAll('.radio-card');
+  console.log("[VOICE] Radios détectées :", [...radios].map(r => r.dataset.name));
+  let found = false;
+  radios.forEach(radio => {
+    const name = radio.dataset.name?.toLowerCase();
+    const url = radio.dataset.url;
+    const lower = transcript.toLowerCase();
+    if (name && url && (lower.includes(name) || lower.includes("lance " + name) || lower.includes("mets " + name) || lower.includes("joue " + name))) {
+      console.log("[VOICE] Lecture de la radio :", name, "=>", url);
+      player.src = url;
+      player.play();
+      found = true;
+    }
+  });
+  return found;
+}
 
+
+  
 
 
 recognition.onresult = (event) => {
