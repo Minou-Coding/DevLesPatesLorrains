@@ -2217,12 +2217,12 @@ function controlAudio(transcript) {
     console.log("[VOICE] Lecture démarrée");
     return true;
   }
-  if (transcript.includes("suivant") && nextBtn) {
+  if (transcript.includes("suivant") &amp;&amp; nextBtn) {
     nextBtn.click();
     console.log("[VOICE] Piste suivante");
     return true;
   }
-  if ((transcript.includes("précédent") || transcript.includes("précédente")) && prevBtn) {
+  if ((transcript.includes("précédent") || transcript.includes("précédente")) &amp;&amp; prevBtn) {
     prevBtn.click();
     console.log("[VOICE] Piste précédente");
     return true;
@@ -2252,9 +2252,6 @@ function controlAudio(transcript) {
 
   return false;
 }
-</script>
-
-
 
 </body>
 </html>
